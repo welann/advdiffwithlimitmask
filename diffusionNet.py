@@ -4,7 +4,11 @@ import math
 from unet import Unet
 from tqdm import tqdm
 
-from diffusers import DDPMPipeline
+from diffusers import DiffusionPipeline
+
+generator = DiffusionPipeline.from_pretrained("anton-l/ddpm-butterflies-128").to("cuda")
+image = generator().images[0]
+image
 
 class DiffusionNet(nn.Module):
     def __init__(self, image_size, in_channels, time_embedding_dim=256, timesteps=500, base_dim=32,

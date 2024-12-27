@@ -140,6 +140,31 @@ def main():
     adv_ori_images, adv_labels = adv_ori_images.to(device), adv_labels.to(device)
     dataset = TensorDataset(adv_ori_images, adv_labels)
     sampled_data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    
+    #===========
+    selected_images = []
+    selected_labels = []
+    for images, labels in sampled_data_loader:
+        remaining = 36 - len(selected_images)
+        if remaining <= 0:
+            break
+        selected_images.append(images[:remaining])
+        selected_labels.append(labels[:remaining])
+
+    selected_images = torch.cat(selected_images)[:36]
+    selected_labels = torch.cat(selected_labels)[:36]
+
+    # 保存图片
+    utils.save_adversarial_example(selected_images, "results/selected_36_adversarial_examples.png")
+
+    # 打印标签
+    print("所选36张图片的标签  ")
+    for i, label in enumerate(selected_labels):
+        print(f"图片 {i+1}: {label.item()}", end='  ')
+        if (i + 1) % 6 == 0:  # 每行打印6个标签
+            print()  # 换行
+    #============
+
     # 测试分类模型的准确度
     accuracy = utils.evaluate_accuracy(classifier, sampled_data_loader)
 
