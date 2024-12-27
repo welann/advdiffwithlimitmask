@@ -96,7 +96,7 @@ class AdvDiffuser(nn.Module):
 
         # regester hook
         hook_a = target_layer.register_forward_hook(save_activation)
-        hook_b = target_layer.register_backward_hook(save_gradient)
+        hook_b = target_layer.register_full_backward_hook(save_gradient)
 
         # forward
         output = self(x)
